@@ -107,7 +107,7 @@ export default function DeviceQrCard({
     try {
       const dataUrl = await toPng(cardContainerRef.current, {
         pixelRatio: 2.5,
-        backgroundColor: isDark ? '#121824' : '#edf2f7',
+        backgroundColor: isDark ? '#0e1420' : '#ffffff',
       });
       const res = await fetch(dataUrl);
       return await res.blob();
@@ -234,125 +234,119 @@ export default function DeviceQrCard({
         THE EXACT CARD CONTAINER AS IN USER'S WHATSAPP IMAGE
         ============================================================
       */}
+      {/* 
+        ============================================================
+        SLEEK MODERN STANDEE CARD (Single Unified Surface)
+        ============================================================
+      */}
       <div
         ref={cardContainerRef}
-        className={`w-full max-w-[340px] sm:max-w-[380px] p-3.5 sm:p-6 rounded-[22px] sm:rounded-[28px] flex flex-col items-center select-none border transition-colors ${
+        className={`w-full max-w-[340px] sm:max-w-[360px] p-5 sm:p-6 rounded-2xl flex flex-col items-center select-none border transition-colors shadow-sm ${
           isDark
-            ? 'bg-[#121824] border-slate-800 shadow-[0_4px_24px_rgba(0,0,0,0.4)]'
-            : 'bg-[#edf2f7] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)]'
+            ? 'bg-[#0e1420] border-slate-800 text-white shadow-xl'
+            : 'bg-white border-slate-200 text-slate-900 shadow-sm'
         }`}
       >
-        {/* Top: Avatar + Payee Name Header */}
-        <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-5">
+        {/* Top Header: Rakexura Logo & Merchant Name */}
+        <div className="w-full flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
           <div
-            className={`w-[38px] h-[38px] sm:w-[48px] sm:h-[48px] rounded-full overflow-hidden p-0.5 bg-white shadow-xs shrink-0 flex items-center justify-center ring-1 ${
-              isDark ? 'ring-white/10' : 'ring-slate-200'
+            className={`w-[34px] h-[34px] rounded-lg overflow-hidden p-0.5 shrink-0 flex items-center justify-center border ${
+              isDark ? 'bg-slate-900 border-slate-700/80' : 'bg-slate-50 border-slate-200/80'
             }`}
           >
             <img
               src="/logos/rakexura-logo-256.png"
               alt="Rakexura"
-              className="w-full h-full rounded-full object-contain p-0.5 shrink-0"
+              className="w-full h-full object-contain shrink-0"
             />
           </div>
 
           <h2
-            className={`text-lg sm:text-2xl font-bold tracking-tight ${
-              isDark ? 'text-white' : 'text-slate-800'
+            className={`text-base sm:text-lg font-bold tracking-tight ${
+              isDark ? 'text-white' : 'text-slate-900'
             }`}
           >
             {payeeName}
           </h2>
         </div>
 
-        {/* Center: Inner Rounded Card with QR Code or Placeholder (Theme-aware) */}
-        <div
-          className={`w-full rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 shadow-sm border flex flex-col items-center transition-colors ${
-            isDark
-              ? 'bg-[#0a0e17] border-slate-800/80 text-white'
-              : 'bg-white border-slate-100 text-slate-900'
-          }`}
-        >
-          
-          {/* QR Code Canvas (When valid amount) or Placeholder (When 0 or blank) */}
-          <div ref={qrContainerRef} className="w-full flex items-center justify-center overflow-hidden">
-            {hasValidAmount ? (
-              <div className="overflow-hidden flex items-center justify-center rounded-2xl transition-all p-1">
-                <QrCanvas
-                  data={upiUrl}
-                  theme={qrTheme}
-                  dotStyle={qrDotStyle}
-                  cornerStyle={qrCornerStyle}
-                  logoUrl={logoUrl}
-                  size={qrSize}
-                />
-              </div>
-            ) : (
-              /* Clean Placeholder when ₹0 or empty */
-              <div
-                style={{ width: qrSize, height: qrSize }}
-                className={`rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-4 text-center select-none transition-colors ${
-                  isDark
-                    ? 'border-slate-800 bg-[#0f1524]/60 text-slate-300'
-                    : 'border-slate-200 bg-slate-50/70 text-slate-700'
-                }`}
-              >
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors ${
-                    isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-400'
-                  }`}
-                >
-                  <QrCode className="w-6 h-6 stroke-[1.5]" />
-                </div>
-                <p className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-700'}`}>
-                  {isZeroOrNegative ? 'Invalid Amount' : 'Enter Price'}
-                </p>
-                <p
-                  className={`text-[11px] mt-0.5 leading-tight max-w-[160px] ${
-                    isDark ? 'text-slate-400' : 'text-slate-400'
-                  }`}
-                >
-                  {isZeroOrNegative
-                    ? 'Payment amount must be at least ₹1'
-                    : 'Enter an amount above to generate payment QR'}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Amount & UPI ID text */}
-          <div className="mt-2.5 sm:mt-4 text-center w-full">
-            {hasValidAmount ? (
-              <div
-                className={`text-xl sm:text-3xl font-extrabold font-sans tracking-tight mb-0.5 sm:mb-1 ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}
-              >
-                {formattedAmount}
-              </div>
-            ) : (
-              <div
-                className={`text-base sm:text-xl font-bold font-mono mb-0.5 sm:mb-1 ${
-                  isDark ? 'text-slate-500' : 'text-slate-400'
-                }`}
-              >
-                {isZeroOrNegative ? '₹0.00' : '₹ —'}
-              </div>
-            )}
-            <p
-              className={`text-[11px] sm:text-sm font-medium font-mono tracking-tight truncate select-all px-1 ${
-                isDark ? 'text-slate-400' : 'text-slate-600'
+        {/* Center: QR Code Canvas or Placeholder */}
+        <div ref={qrContainerRef} className="w-full flex items-center justify-center overflow-hidden py-1">
+          {hasValidAmount ? (
+            <div className="overflow-hidden flex items-center justify-center rounded-xl transition-all">
+              <QrCanvas
+                data={upiUrl}
+                theme={qrTheme}
+                dotStyle={qrDotStyle}
+                cornerStyle={qrCornerStyle}
+                logoUrl={logoUrl}
+                size={qrSize}
+              />
+            </div>
+          ) : (
+            /* Clean Placeholder when ₹0 or empty */
+            <div
+              style={{ width: qrSize, height: qrSize }}
+              className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-4 text-center select-none transition-colors ${
+                isDark
+                  ? 'border-slate-800 bg-[#0a0e17]/60 text-slate-300'
+                  : 'border-slate-200 bg-slate-50/70 text-slate-700'
               }`}
             >
-              UPI ID: {upiId}
-            </p>
-          </div>
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-1.5 transition-colors ${
+                  isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-400'
+                }`}
+              >
+                <QrCode className="w-5 h-5 stroke-[1.5]" />
+              </div>
+              <p className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-700'}`}>
+                {isZeroOrNegative ? 'Invalid Amount' : 'Enter Price'}
+              </p>
+              <p
+                className={`text-[11px] mt-0.5 leading-tight max-w-[160px] ${
+                  isDark ? 'text-slate-400' : 'text-slate-400'
+                }`}
+              >
+                {isZeroOrNegative
+                  ? 'Payment amount must be at least ₹1'
+                  : 'Enter an amount above to generate payment QR'}
+              </p>
+            </div>
+          )}
+        </div>
 
+        {/* Amount & UPI ID text */}
+        <div className="mt-3.5 text-center w-full">
+          {hasValidAmount ? (
+            <div
+              className={`text-2xl sm:text-3xl font-extrabold font-sans tracking-tight mb-0.5 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              {formattedAmount}
+            </div>
+          ) : (
+            <div
+              className={`text-lg sm:text-xl font-bold font-mono mb-0.5 ${
+                isDark ? 'text-slate-500' : 'text-slate-400'
+              }`}
+            >
+              {isZeroOrNegative ? '₹0.00' : '₹ —'}
+            </div>
+          )}
+          <p
+            className={`text-xs sm:text-sm font-medium font-mono tracking-tight truncate select-all px-1 ${
+              isDark ? 'text-slate-400' : 'text-slate-600'
+            }`}
+          >
+            UPI ID: {upiId}
+          </p>
         </div>
 
         {/* Bottom Helper Text */}
-        <div className="w-full text-center mt-2.5 sm:mt-4 text-[11px] sm:text-sm font-medium">
-          <p className={isDark ? 'text-slate-400' : 'text-slate-500'}>
+        <div className="w-full text-center mt-3 text-[11px] sm:text-xs font-medium">
+          <p className={isDark ? 'text-slate-500' : 'text-slate-400'}>
             {hasValidAmount ? 'Scan to pay with any UPI app' : 'Ready for payment'}
           </p>
         </div>
