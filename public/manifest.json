@@ -1,0 +1,18 @@
+{
+  "name": "Rakexura PayQR",
+  "short_name": "PayQR",
+  "description": "Generative Dynamic UPI Payment & Retail Standee",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c1017",
+  "theme_color": "#0c1017",
+  "icons": [
+    {
+      "src": "/logos/rakexura-logo-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
