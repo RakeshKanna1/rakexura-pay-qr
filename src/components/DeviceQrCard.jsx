@@ -95,11 +95,13 @@ export default function DeviceQrCard({
   // Generate Image Blob of the Card
   const captureCardBlob = async () => {
     if (!cardContainerRef.current) return null;
-    await new Promise((r) => setTimeout(r, 60));
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch (_) {}
+    }
+    await new Promise((r) => setTimeout(r, 120));
     const dataUrl = await toPng(cardContainerRef.current, {
-      cacheBust: true,
       pixelRatio: 2.5,
-      backgroundColor: isDark ? '#121824' : '#edf2f7',
+      backgroundColor: isDark ? '#121824' : '#ffffff',
     });
     const res = await fetch(dataUrl);
     return await res.blob();
@@ -179,12 +181,14 @@ export default function DeviceQrCard({
     setIsExporting(true);
 
     try {
-      await new Promise((r) => setTimeout(r, 100));
+      if (document.fonts && document.fonts.ready) {
+        try { await document.fonts.ready; } catch (_) {}
+      }
+      await new Promise((r) => setTimeout(r, 120));
 
       const dataUrl = await toPng(cardContainerRef.current, {
-        cacheBust: true,
         pixelRatio: 3,
-        backgroundColor: isDark ? '#121824' : '#edf2f7',
+        backgroundColor: isDark ? '#121824' : '#ffffff',
       });
 
       const filename = `Rakesh-Pay-${amount ? amount + 'INR' : 'QR'}.png`;
@@ -195,12 +199,15 @@ export default function DeviceQrCard({
 
       confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
     } catch (err) {
-      console.warn('html-to-image capture fallback to canvas:', err);
-      const canvas = cardContainerRef.current?.querySelector('canvas');
-      if (canvas) {
+      console.warn('html-to-image capture fallback to svg:', err);
+      const svg = cardContainerRef.current?.querySelector('svg');
+      if (svg) {
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
         const link = document.createElement('a');
-        link.download = `Rakesh-QR-${amount ? amount : 'pay'}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.download = `Rakesh-Pay-${amount ? amount : 'QR'}.svg`;
+        link.href = svgUrl;
         link.click();
       }
     } finally {
