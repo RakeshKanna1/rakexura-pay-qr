@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Download, MessageCircle, ExternalLink, QrCode, Check, Copy, AlertCircle, SunMedium, Moon } from 'lucide-react';
+import { Download, MessageCircle, ExternalLink, QrCode, Check, Copy, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { toPng } from 'html-to-image';
 import QrCanvas from './QrCanvas';
@@ -16,7 +16,6 @@ export default function DeviceQrCard({
   const [showWaModal, setShowWaModal] = useState(false);
   const [customerPhone, setCustomerPhone] = useState('');
   const [clipboardToast, setClipboardToast] = useState(false);
-  const [highContrastQr, setHighContrastQr] = useState(false);
   
   // Responsive QR Size (Consistent across both light & dark modes)
   const [qrSize, setQrSize] = useState(() => {
@@ -55,7 +54,7 @@ export default function DeviceQrCard({
     : null;
 
   // Dedicated QR Theme Design for Light vs Dark mode
-  const qrTheme = isDark && !highContrastQr
+  const qrTheme = isDark
     ? {
         bg: '#0a0e17',
         dotColor1: '#ffffff',
@@ -73,8 +72,8 @@ export default function DeviceQrCard({
         glow: 'transparent',
       };
 
-  const qrDotStyle = isDark && !highContrastQr ? 'rounded' : 'square';
-  const qrCornerStyle = isDark && !highContrastQr ? 'extra-rounded' : 'square';
+  const qrDotStyle = isDark ? 'rounded' : 'square';
+  const qrCornerStyle = isDark ? 'extra-rounded' : 'square';
 
   // Pre-formatted professional short WhatsApp message for customers
   const generateCustomerMessage = () => {
@@ -281,13 +280,7 @@ export default function DeviceQrCard({
           {/* QR Code Canvas (When valid amount) or Placeholder (When 0 or blank) */}
           <div className="w-full flex items-center justify-center overflow-hidden">
             {hasValidAmount ? (
-              <div
-                className={`overflow-hidden flex items-center justify-center rounded-2xl transition-all ${
-                  isDark && highContrastQr
-                    ? 'p-2 bg-white rounded-2xl shadow-xs'
-                    : 'p-1 rounded-2xl'
-                }`}
-              >
+              <div className="overflow-hidden flex items-center justify-center rounded-2xl transition-all p-1">
                 <QrCanvas
                   data={upiUrl}
                   theme={qrTheme}
@@ -360,23 +353,11 @@ export default function DeviceQrCard({
 
         </div>
 
-        {/* Bottom Text + Dark Mode High-Contrast QR Option */}
-        <div className="w-full flex items-center justify-center gap-2 mt-2.5 sm:mt-4 text-[11px] sm:text-sm font-medium text-center">
+        {/* Bottom Helper Text */}
+        <div className="w-full text-center mt-2.5 sm:mt-4 text-[11px] sm:text-sm font-medium">
           <p className={isDark ? 'text-slate-400' : 'text-slate-500'}>
             {hasValidAmount ? 'Scan to pay with any UPI app' : 'Ready for payment'}
           </p>
-
-          {isDark && hasValidAmount && (
-            <button
-              type="button"
-              onClick={() => setHighContrastQr((prev) => !prev)}
-              title={highContrastQr ? 'Switch to Cyber Dark QR' : 'Switch to High-Contrast White Tile'}
-              className="text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-700 bg-slate-800 text-slate-300 hover:text-white transition-all flex items-center gap-1 shrink-0"
-            >
-              {highContrastQr ? <Moon className="w-2.5 h-2.5" /> : <SunMedium className="w-2.5 h-2.5 text-amber-400" />}
-              <span>{highContrastQr ? 'Cyber QR' : 'White Tile'}</span>
-            </button>
-          )}
         </div>
 
       </div>
