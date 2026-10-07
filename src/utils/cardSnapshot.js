@@ -3,8 +3,8 @@
 // Bypasses html-to-image to guarantee 100% reliable, zero-hang, razor-sharp PNG export in every browser.
 
 export async function generateCardSnapshotBlob({
-  payeeName = 'Rakesh',
-  avatarUrl = '/avatar.png',
+  payeeName = 'Rakexura',
+  avatarUrl = '/logos/rakexura-logo-256.png',
   amount = '499',
   upiId = '12k21rakeshkannam@oksbi',
   qrElement, // <canvas> or <svg> or <img> DOM element

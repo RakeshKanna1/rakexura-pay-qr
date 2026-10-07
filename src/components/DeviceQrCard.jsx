@@ -76,12 +76,12 @@ export default function DeviceQrCard({
   const qrDotStyle = isDark ? 'rounded' : 'square';
   const qrCornerStyle = isDark ? 'extra-rounded' : 'square';
 
-  // Clean, official 2-line caption matching GPay & PhonePe Business standards
+  // Clean, professional caption without personal name or UPI ID
   const generateCustomerMessage = () => {
     if (formattedAmount) {
-      return `Payment request of *${formattedAmount}* from *${payeeName}* (${upiId}).\nScan the QR code above with any UPI app (GPay, PhonePe, Paytm) to complete payment.`;
+      return `Payment request for *${formattedAmount}*.\nScan the QR code above with any UPI app (GPay, PhonePe, Paytm) to complete payment.`;
     }
-    return `Payment request from *${payeeName}* (${upiId}).\nScan the QR code above with any UPI app to pay.`;
+    return `Payment request.\nScan the QR code above with any UPI app to pay.`;
   };
 
   // Generate Image Blob of the Card using direct 2D Canvas engine
@@ -91,7 +91,7 @@ export default function DeviceQrCard({
     try {
       const blob = await generateCardSnapshotBlob({
         payeeName,
-        avatarUrl: '/avatar.png',
+        avatarUrl: '/logos/rakexura-logo-256.png',
         amount,
         upiId,
         qrElement: qrEl,
@@ -123,7 +123,7 @@ export default function DeviceQrCard({
     try {
       const blob = await captureCardBlob();
       const captionText = generateCustomerMessage();
-      const fileName = `Rakesh-Pay-${amount}INR.png`;
+      const fileName = `Rakexura-Pay-${amount}INR.png`;
 
       // 1. Check if native Web Share with Files is supported (Android Chrome, iOS Safari)
       if (blob && navigator.canShare && window.File) {
@@ -132,7 +132,7 @@ export default function DeviceQrCard({
           try {
             await navigator.share({
               files: [file],
-              title: `Payment Request from ${payeeName}`,
+              title: `Payment Request — ${formattedAmount || 'Pay via UPI'}`,
               text: captionText,
             });
             setShowWaModal(false);
@@ -249,12 +249,9 @@ export default function DeviceQrCard({
             }`}
           >
             <img
-              src="/avatar.png"
-              alt="Avatar"
-              className="w-full h-full rounded-full object-cover shrink-0"
-              onError={(e) => {
-                e.target.src = '/logos/rakexura-logo-256.png';
-              }}
+              src="/logos/rakexura-logo-256.png"
+              alt="Rakexura"
+              className="w-full h-full rounded-full object-contain p-0.5 shrink-0"
             />
           </div>
 

@@ -31,7 +31,7 @@ export default function App() {
 
   // Static user config matching the WhatsApp image
   const upiId = '12k21rakeshkannam@oksbi';
-  const payeeName = 'Rakesh';
+  const payeeName = 'Rakexura';
   const activeLogoUrl = '/logos/rakexura-logo-256.png'; // Rakexura logo in QR center (no GPay, no sparkles)
 
   // NPCI UPI Deep Link
