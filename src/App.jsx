@@ -5,8 +5,8 @@ import DeviceQrCard from './components/DeviceQrCard';
 import { buildUpiUrl } from './utils/upi';
 
 export default function App() {
-  // Amount State
-  const [amount, setAmount] = useState('499');
+  // Amount State (empty by default so user enters fresh amount)
+  const [amount, setAmount] = useState('');
 
   // Dark Theme State (persisted & synced with documentElement)
   const [isDark, setIsDark] = useState(() => {
