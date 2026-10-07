@@ -75,14 +75,12 @@ export default function DeviceQrCard({
   const qrDotStyle = isDark ? 'rounded' : 'square';
   const qrCornerStyle = isDark ? 'extra-rounded' : 'square';
 
-  // Pre-formatted professional short WhatsApp message for customers
+  // Clean, official 2-line caption matching GPay & PhonePe Business standards
   const generateCustomerMessage = () => {
-    let msg = `*Payment Request — ${formattedAmount || 'Custom Amount'}*\n`;
-    msg += `Payee: *${payeeName}* | UPI: \`${upiId}\`\n\n`;
-    msg += `👉 *Pay via UPI (GPay / PhonePe / Paytm):*\n`;
-    msg += `${upiUrl}\n\n`;
-    msg += `_Scan QR code above or click link to pay. Thank you!_`;
-    return msg;
+    if (formattedAmount) {
+      return `Payment request of *${formattedAmount}* from *${payeeName}* (${upiId}).\nScan the QR code above with any UPI app (GPay, PhonePe, Paytm) to complete payment.`;
+    }
+    return `Payment request from *${payeeName}* (${upiId}).\nScan the QR code above with any UPI app to pay.`;
   };
 
   // Generate Image Blob of the Card
