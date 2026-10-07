@@ -76,19 +76,13 @@ export default function DeviceQrCard({
   const qrDotStyle = isDark && !highContrastQr ? 'rounded' : 'square';
   const qrCornerStyle = isDark && !highContrastQr ? 'extra-rounded' : 'square';
 
-  // Pre-formatted WhatsApp message for customers
+  // Pre-formatted professional short WhatsApp message for customers
   const generateCustomerMessage = () => {
-    let msg = `*Payment Request from ${payeeName}*\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    if (formattedAmount) {
-      msg += `💰 *Amount Due:* ${formattedAmount}\n`;
-    }
-    msg += `👤 *Payee:* ${payeeName}\n`;
-    msg += `🆔 *UPI ID:* ${upiId}\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `⚡ *Tap link to pay with any UPI App (GPay, PhonePe, Paytm):*\n`;
+    let msg = `*Payment Request — ${formattedAmount || 'Custom Amount'}*\n`;
+    msg += `Payee: *${payeeName}* | UPI: \`${upiId}\`\n\n`;
+    msg += `👉 *Pay via UPI (GPay / PhonePe / Paytm):*\n`;
     msg += `${upiUrl}\n\n`;
-    msg += `Scan QR code or click link above to complete payment. Thank you!`;
+    msg += `_Scan QR code above or click link to pay. Thank you!_`;
     return msg;
   };
 
