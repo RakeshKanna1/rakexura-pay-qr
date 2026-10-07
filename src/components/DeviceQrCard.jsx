@@ -43,6 +43,7 @@ export default function DeviceQrCard({
   }, []);
 
   const cardContainerRef = useRef(null);
+  const qrContainerRef = useRef(null);
 
   // Validation: Amount must be >= ₹1 to generate an actual payment QR
   const numAmount = Number(amount);
@@ -87,7 +88,7 @@ export default function DeviceQrCard({
   // Generate Image Blob of the Card using direct 2D Canvas engine
   const captureCardBlob = async () => {
     if (!cardContainerRef.current) return null;
-    const qrEl = cardContainerRef.current.querySelector('canvas, svg, img');
+    const qrEl = qrContainerRef.current?.querySelector('canvas, svg, img');
     try {
       const blob = await generateCardSnapshotBlob({
         payeeName,
@@ -274,7 +275,7 @@ export default function DeviceQrCard({
         >
           
           {/* QR Code Canvas (When valid amount) or Placeholder (When 0 or blank) */}
-          <div className="w-full flex items-center justify-center overflow-hidden">
+          <div ref={qrContainerRef} className="w-full flex items-center justify-center overflow-hidden">
             {hasValidAmount ? (
               <div className="overflow-hidden flex items-center justify-center rounded-2xl transition-all p-1">
                 <QrCanvas
