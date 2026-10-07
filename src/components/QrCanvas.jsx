@@ -22,7 +22,7 @@ export default function QrCanvas({
     const qrCode = new QRCodeStyling({
       width: size,
       height: size,
-      type: 'svg',
+      type: 'canvas',
       data: data || 'upi://pay?pa=rakexura@upi',
       image: logoUrl || undefined,
       dotsOptions: {
@@ -67,16 +67,27 @@ export default function QrCanvas({
         containerRef.current.innerHTML = '';
       }
     };
-  }, [data, theme, dotStyle, cornerStyle, logoUrl, size]);
+  }, [
+    data,
+    theme.bg,
+    theme.dotColor1,
+    theme.dotColor2,
+    theme.cornerSquare,
+    theme.cornerDot,
+    dotStyle,
+    cornerStyle,
+    logoUrl,
+    size,
+  ]);
 
   return (
     <div
       ref={containerRef}
-      className="flex items-center justify-center rounded-2xl overflow-hidden [&>canvas]:max-w-full [&>canvas]:h-auto [&>svg]:max-w-full [&>svg]:h-auto transition-all"
       style={{
         boxShadow: `0 0 35px -5px ${theme.glow}`,
         backgroundColor: theme.bg,
       }}
+      className="flex items-center justify-center rounded-2xl overflow-hidden [&>canvas]:max-w-full [&>canvas]:h-auto [&>svg]:max-w-full [&>svg]:h-auto transition-all"
     />
   );
 }

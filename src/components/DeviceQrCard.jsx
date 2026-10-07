@@ -3,6 +3,7 @@ import { Download, MessageCircle, ExternalLink, QrCode, Check, Copy, AlertCircle
 import confetti from 'canvas-confetti';
 import { toPng } from 'html-to-image';
 import QrCanvas from './QrCanvas';
+import { generateCardSnapshotBlob } from '../utils/cardSnapshot';
 
 export default function DeviceQrCard({
   upiUrl,
@@ -83,19 +84,35 @@ export default function DeviceQrCard({
     return `Payment request from *${payeeName}* (${upiId}).\nScan the QR code above with any UPI app to pay.`;
   };
 
-  // Generate Image Blob of the Card
+  // Generate Image Blob of the Card using direct 2D Canvas engine
   const captureCardBlob = async () => {
     if (!cardContainerRef.current) return null;
-    if (document.fonts && document.fonts.ready) {
-      try { await document.fonts.ready; } catch (_) {}
+    const qrEl = cardContainerRef.current.querySelector('canvas, svg, img');
+    try {
+      const blob = await generateCardSnapshotBlob({
+        payeeName,
+        avatarUrl: '/avatar.png',
+        amount,
+        upiId,
+        qrElement: qrEl,
+        isDark,
+      });
+      if (blob) return blob;
+    } catch (e) {
+      console.warn('Canvas snapshot notice:', e);
     }
-    await new Promise((r) => setTimeout(r, 120));
-    const dataUrl = await toPng(cardContainerRef.current, {
-      pixelRatio: 2.5,
-      backgroundColor: isDark ? '#121824' : '#ffffff',
-    });
-    const res = await fetch(dataUrl);
-    return await res.blob();
+
+    // Fallback to toPng
+    try {
+      const dataUrl = await toPng(cardContainerRef.current, {
+        pixelRatio: 2.5,
+        backgroundColor: isDark ? '#121824' : '#edf2f7',
+      });
+      const res = await fetch(dataUrl);
+      return await res.blob();
+    } catch (_) {
+      return null;
+    }
   };
 
   // Smart WhatsApp Share: Sends image file on Mobile, copies to clipboard on Desktop
@@ -172,35 +189,19 @@ export default function DeviceQrCard({
     setIsExporting(true);
 
     try {
-      if (document.fonts && document.fonts.ready) {
-        try { await document.fonts.ready; } catch (_) {}
-      }
-      await new Promise((r) => setTimeout(r, 120));
-
-      const dataUrl = await toPng(cardContainerRef.current, {
-        pixelRatio: 3,
-        backgroundColor: isDark ? '#121824' : '#ffffff',
-      });
-
-      const filename = `Rakesh-Pay-${amount ? amount + 'INR' : 'QR'}.png`;
-      const link = document.createElement('a');
-      link.download = filename;
-      link.href = dataUrl;
-      link.click();
-
-      confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
-    } catch (err) {
-      console.warn('html-to-image capture fallback to svg:', err);
-      const svg = cardContainerRef.current?.querySelector('svg');
-      if (svg) {
-        const svgData = new XMLSerializer().serializeToString(svg);
-        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-        const svgUrl = URL.createObjectURL(svgBlob);
+      const blob = await captureCardBlob();
+      if (blob) {
+        const filename = `Rakesh-Pay-${amount ? amount + 'INR' : 'QR'}.png`;
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.download = `Rakesh-Pay-${amount ? amount : 'QR'}.svg`;
-        link.href = svgUrl;
+        link.download = filename;
+        link.href = url;
         link.click();
+        URL.revokeObjectURL(url);
+        confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
       }
+    } catch (err) {
+      console.warn('Download error:', err);
     } finally {
       setIsExporting(false);
     }
